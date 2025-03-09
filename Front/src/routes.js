@@ -9,6 +9,7 @@ const Payment = React.lazy(() => import('./views/followUp/payment/Payment'))
 const Plans = React.lazy(() => import('./views/ESim/plans/Plans'))
 const Price = React.lazy(() => import('./views/ESim/price/Price'))
 const ClientList = React.lazy(() => import('./views/customerSettings/clientList/ClientList'))
+const ListPayment = React.lazy(() => import('./views/customerSettings/listPayment/ListPayment'))
 
 
 // Notifications
@@ -27,6 +28,7 @@ const routes = [
   { path: '/account/admins', name: 'admins', element: Admins },
   { path: '/account/users', name: 'users', element: Users },
   { path: '/customerSettings/clientList', name: 'clientList', element: ClientList },
+  { path: '/customerSettings/listPayment', name: 'listPayment', element: ListPayment },
   { path: '/followUp/orders', name: 'orders', element: Orders },
   { path: '/followUp/payment', name: 'payment', element: Payment },
   { path: '/ESim/plans', name: 'plans', element: Plans },
