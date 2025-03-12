@@ -13,7 +13,16 @@ const CardModel = require("./models/Card");
 const app = express();
 app.use(express.json());
 app.use(cors());
-
+const Subscription = require("./models/Sub");
+const PaymentMethodModel = require("./models/PaymentM");
+const CategoryModel = require("./models/Categorie");
+const KitModel = require("./models/Kit");
+const ItemModel = require("./models/Childcat");
+const BrandModel = require("./models/Brand");
+const ArticleModel = require("./models/Article");
+const Publicite = require("./models/Advertisment");
+const Reduction = require("./models/Discount");
+const ArticleReduction = require("./models/DiscountItems");
 // Connexion à MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -241,6 +250,614 @@ app.delete("/deleteCardByNumber/:cardNumber", async (req, res) => {
   } catch (error) {
     console.error("Error deleting card:", error);
     res.status(500).json({ message: "Error deleting card" });
+  }
+});
+
+app.get("/getSubscriptions", async (req, res) => {
+  try {
+    const subscriptions = await Subscription.find();
+    res.status(200).json(subscriptions);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des abonnements", error });
+  }
+});
+
+app.post("/createSubscription", async (req, res) => {
+  try {
+    const newSubscription = new Subscription(req.body);
+    await newSubscription.save();
+    res.status(201).json({ message: "Abonnement créé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la création", error });
+  }
+});
+
+app.put("/updateSubscription/:profileId", async (req, res) => {
+  try {
+    const { profileId } = req.params;
+    const updatedData = req.body;
+
+    const updatedSubscription = await Subscription.findOneAndUpdate({ profileId }, updatedData, {
+      new: true,
+    });
+
+    if (updatedSubscription) {
+      res.status(200).json({ message: "Abonnement mis à jour avec succès", updatedSubscription });
+    } else {
+      res.status(404).json({ message: "Abonnement non trouvé" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la mise à jour de l'abonnement", error });
+  }
+});
+
+app.delete("/deleteSubscription/:profileId", async (req, res) => {
+  try {
+    const { profileId } = req.params;
+    const deletedSubscription = await Subscription.findOneAndDelete({ profileId });
+
+    if (deletedSubscription) {
+      res.status(200).json({ message: "Abonnement supprimé avec succès", deletedSubscription });
+    } else {
+      res.status(404).json({ message: "Abonnement non trouvé" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression de l'abonnement", error });
+  }
+});
+
+app.post("/createPaymentMethod", async (req, res) => {
+  const { name, description, secretId, userId, accountId, token, auth, attributionId, requestId } = req.body;
+  try {
+    const existingMethod = await PaymentMethodModel.findOne({ name });
+    if (existingMethod) {
+      return res.status(400).json({ message: "Payment method already exists!" });
+    }
+    const newMethod = new PaymentMethodModel({
+      name,
+      description,
+      secretId,
+      userId,
+      accountId,
+      token,
+      auth,
+      attributionId,
+      requestId,
+    });
+    await newMethod.save();
+    res.status(201).json({ message: "Payment method created successfully", method: newMethod });
+  } catch (error) {
+    console.error("Error creating payment method:", error);
+    res.status(500).json({ message: "Error creating payment method", error: error.message });
+  }
+});
+
+app.get("/getPaymentMethods", async (req, res) => {
+  try {
+    const methods = await PaymentMethodModel.find({}, { __v: 0, _id: 0 }); // Exclure __v et _id
+    res.status(200).json(methods);
+  } catch (error) {
+    console.error("Error fetching payment methods:", error);
+    res.status(500).json({ message: "Error fetching payment methods", error: error.message });
+  }
+});
+
+app.put("/updatePaymentMethodByName/:name", async (req, res) => {
+  const { name } = req.params;
+  const { description, secretId, userId, accountId, token, auth, attributionId, requestId } = req.body;
+  try {
+    const method = await PaymentMethodModel.findOneAndUpdate(
+      { name },
+      { description, secretId, userId, accountId, token, auth, attributionId, requestId },
+      { new: true, runValidators: true }
+    );
+    if (!method) {
+      return res.status(404).json({ message: "Payment method not found" });
+    }
+    res.status(200).json({ message: "Payment method updated successfully", method });
+  } catch (error) {
+    console.error("Error updating payment method:", error);
+    res.status(500).json({ message: "Error updating payment method", error: error.message });
+  }
+});
+
+app.delete("/deletePaymentMethodByName/:name", async (req, res) => {
+  const { name } = req.params;
+  try {
+    const method = await PaymentMethodModel.findOneAndDelete({ name });
+    if (!method) {
+      return res.status(404).json({ message: "Payment method not found" });
+    }
+    res.status(200).json({ message: "Payment method deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting payment method:", error);
+    res.status(500).json({ message: "Error deleting payment method", error: error.message });
+  }
+});
+
+app.post("/createCategory", async (req, res) => {
+  const { name, description } = req.body;
+  try {
+    const existingCategory = await CategoryModel.findOne({ name });
+    if (existingCategory) {
+      return res.status(400).json({ message: "Category already exists!" });
+    }
+    const newCategory = new CategoryModel({ name, description });
+    await newCategory.save();
+    res.status(201).json({ message: "Category created successfully", category: newCategory });
+  } catch (error) {
+    console.error("Error creating category:", error);
+    res.status(500).json({ message: "Error creating category", error: error.message });
+  }
+});
+
+app.get("/getCategories", async (req, res) => {
+  try {
+    const categories = await CategoryModel.find({}, { __v: 0 });
+    res.status(200).json(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).json({ message: "Error fetching categories", error: error.message });
+  }
+});
+
+app.put("/updateCategoryByName/:name", async (req, res) => {
+  const { name } = req.params;
+  const { description } = req.body;
+  try {
+    const category = await CategoryModel.findOneAndUpdate(
+      { name },
+      { description },
+      { new: true, runValidators: true }
+    );
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.status(200).json({ message: "Category updated successfully", category });
+  } catch (error) {
+    console.error("Error updating category:", error);
+    res.status(500).json({ message: "Error updating category", error: error.message });
+  }
+});
+
+app.delete("/deleteCategoryByName/:name", async (req, res) => {
+  const { name } = req.params;
+  try {
+    const category = await CategoryModel.findOneAndDelete({ name });
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    res.status(200).json({ message: "Category deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    res.status(500).json({ message: "Error deleting category", error: error.message });
+  }
+});
+
+// Routes pour les kits
+app.post("/createKit", async (req, res) => {
+  const { name, description, categoryId } = req.body;
+  try {
+    const existingKit = await KitModel.findOne({ name });
+    if (existingKit) {
+      return res.status(400).json({ message: "Kit already exists!" });
+    }
+    // Vérifier si categoryId est un ObjectId valide
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({ message: "Invalid categoryId" });
+    }
+    const category = await CategoryModel.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    const newKit = new KitModel({ name, description, categoryId });
+    await newKit.save();
+    res.status(201).json({ message: "Kit created successfully", kit: newKit });
+  } catch (error) {
+    console.error("Error creating kit:", error);
+    res.status(500).json({ message: "Error creating kit", error: error.message });
+  }
+});
+
+app.get("/getKits", async (req, res) => {
+  try {
+    const kits = await KitModel.find().populate("categoryId", "name");
+    res.status(200).json(kits);
+  } catch (error) {
+    console.error("Error fetching kits:", error);
+    res.status(500).json({ message: "Error fetching kits", error: error.message });
+  }
+});
+
+app.put("/updateKitByName/:name", async (req, res) => {
+  const { name } = req.params;
+  const { description, categoryId } = req.body;
+  try {
+    if (categoryId && !mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({ message: "Invalid categoryId" });
+    }
+    if (categoryId) {
+      const category = await CategoryModel.findById(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+    }
+    const kit = await KitModel.findOneAndUpdate(
+      { name },
+      { description, categoryId },
+      { new: true, runValidators: true }
+    );
+    if (!kit) {
+      return res.status(404).json({ message: "Kit not found" });
+    }
+    res.status(200).json({ message: "Kit updated successfully", kit });
+  } catch (error) {
+    console.error("Error updating kit:", error);
+    res.status(500).json({ message: "Error updating kit", error: error.message });
+  }
+});
+
+app.delete("/deleteKitByName/:name", async (req, res) => {
+  const { name } = req.params;
+  try {
+    const kit = await KitModel.findOneAndDelete({ name });
+    if (!kit) {
+      return res.status(404).json({ message: "Kit not found" });
+    }
+    res.status(200).json({ message: "Kit deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting kit:", error);
+    res.status(500).json({ message: "Error deleting kit", error: error.message });
+  }
+});
+
+// Routes pour les items
+app.post("/createItem", async (req, res) => {
+  const { name, description, categoryId, kitId } = req.body;
+  try {
+    const existingItem = await ItemModel.findOne({ name });
+    if (existingItem) {
+      return res.status(400).json({ message: "Item already exists!" });
+    }
+    // Vérifier si categoryId est un ObjectId valide
+    if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({ message: "Invalid categoryId" });
+    }
+    const category = await CategoryModel.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+    // Vérifier si kitId est un ObjectId valide
+    if (!mongoose.Types.ObjectId.isValid(kitId)) {
+      return res.status(400).json({ message: "Invalid kitId" });
+    }
+    const kit = await KitModel.findById(kitId);
+    if (!kit) {
+      return res.status(404).json({ message: "Kit not found" });
+    }
+    const newItem = new ItemModel({ name, description, categoryId, kitId });
+    await newItem.save();
+    res.status(201).json({ message: "Item created successfully", item: newItem });
+  } catch (error) {
+    console.error("Error creating item:", error);
+    res.status(500).json({ message: "Error creating item", error: error.message });
+  }
+});
+
+app.get("/getItems", async (req, res) => {
+  try {
+    const items = await ItemModel.find()
+      .populate("categoryId", "name")
+      .populate("kitId", "name");
+    res.status(200).json(items);
+  } catch (error) {
+    console.error("Error fetching items:", error);
+    res.status(500).json({ message: "Error fetching items", error: error.message });
+  }
+});
+
+app.put("/updateItemByName/:name", async (req, res) => {
+  const { name } = req.params;
+  const { description, categoryId, kitId } = req.body;
+  try {
+    if (categoryId && !mongoose.Types.ObjectId.isValid(categoryId)) {
+      return res.status(400).json({ message: "Invalid categoryId" });
+    }
+    if (categoryId) {
+      const category = await CategoryModel.findById(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+    }
+    if (kitId && !mongoose.Types.ObjectId.isValid(kitId)) {
+      return res.status(400).json({ message: "Invalid kitId" });
+    }
+    if (kitId) {
+      const kit = await KitModel.findById(kitId);
+      if (!kit) {
+        return res.status(404).json({ message: "Kit not found" });
+      }
+    }
+    const item = await ItemModel.findOneAndUpdate(
+      { name },
+      { description, categoryId, kitId },
+      { new: true, runValidators: true }
+    );
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.status(200).json({ message: "Item updated successfully", item });
+  } catch (error) {
+    console.error("Error updating item:", error);
+    res.status(500).json({ message: "Error updating item", error: error.message });
+  }
+});
+
+app.delete("/deleteItemByName/:name", async (req, res) => {
+  const { name } = req.params;
+  try {
+    const item = await ItemModel.findOneAndDelete({ name });
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+    res.status(200).json({ message: "Item deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting item:", error);
+    res.status(500).json({ message: "Error deleting item", error: error.message });
+  }
+});
+
+app.post("/createBrand", async (req, res) => {
+  const { name, description } = req.body;
+  try {
+    const existingBrand = await BrandModel.findOne({ name });
+    if (existingBrand) {
+      return res.status(400).json({ message: "Brand already exists!" });
+    }
+    const newBrand = new BrandModel({ name, description });
+    await newBrand.save();
+    res.status(201).json({ message: "Brand created successfully", brand: newBrand });
+  } catch (error) {
+    console.error("Error creating brand:", error);
+    res.status(500).json({ message: "Error creating brand", error: error.message });
+  }
+});
+
+app.get("/getBrands", async (req, res) => {
+  try {
+    const brands = await BrandModel.find({}, { __v: 0 });
+    res.status(200).json(brands);
+  } catch (error) {
+    console.error("Error fetching brands:", error);
+    res.status(500).json({ message: "Error fetching brands", error: error.message });
+  }
+});
+
+app.put("/updateBrandByName/:name", async (req, res) => {
+  const { name } = req.params;
+  const { description } = req.body;
+  try {
+    const brand = await BrandModel.findOneAndUpdate(
+      { name },
+      { description },
+      { new: true, runValidators: true }
+    );
+    if (!brand) {
+      return res.status(404).json({ message: "Brand not found" });
+    }
+    res.status(200).json({ message: "Brand updated successfully", brand });
+  } catch (error) {
+    console.error("Error updating brand:", error);
+    res.status(500).json({ message: "Error updating brand", error: error.message });
+  }
+});
+
+app.delete("/deleteBrandByName/:name", async (req, res) => {
+  const { name } = req.params;
+  try {
+    const brand = await BrandModel.findOneAndDelete({ name });
+    if (!brand) {
+      return res.status(404).json({ message: "Brand not found" });
+    }
+    res.status(200).json({ message: "Brand deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting brand:", error);
+    res.status(500).json({ message: "Error deleting brand", error: error.message });
+  }
+});
+
+app.post("/createArticle", async (req, res) => {
+  const { name, description, barcode, price, images } = req.body;
+  try {
+    const existingArticle = await ArticleModel.findOne({ name }) || await ArticleModel.findOne({ barcode });
+    if (existingArticle) {
+      return res.status(400).json({ message: "Article or barcode already exists!" });
+    }
+    const newArticle = new ArticleModel({ name, description, barcode, price, images: images || [] });
+    await newArticle.save();
+    res.status(201).json({ message: "Article created successfully", article: newArticle });
+  } catch (error) {
+    console.error("Error creating article:", error);
+    res.status(500).json({ message: "Error creating article", error: error.message });
+  }
+});
+
+app.get("/getArticles", async (req, res) => {
+  try {
+    const articles = await ArticleModel.find({}, { __v: 0 });
+    res.status(200).json(articles);
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    res.status(500).json({ message: "Error fetching articles", error: error.message });
+  }
+});
+
+app.put("/updateArticleByName/:name", async (req, res) => {
+  const { name } = req.params;
+  const { description, barcode, price, images } = req.body;
+  try {
+    const article = await ArticleModel.findOneAndUpdate(
+      { name },
+      { description, barcode, price, images },
+      { new: true, runValidators: true }
+    );
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.status(200).json({ message: "Article updated successfully", article });
+  } catch (error) {
+    console.error("Error updating article:", error);
+    res.status(500).json({ message: "Error updating article", error: error.message });
+  }
+});
+
+app.delete("/deleteArticleByName/:name", async (req, res) => {
+  const { name } = req.params;
+  try {
+    const article = await ArticleModel.findOneAndDelete({ name });
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    res.status(200).json({ message: "Article deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting article:", error);
+    res.status(500).json({ message: "Error deleting article", error: error.message });
+  }
+});
+
+
+app.get("/getPublicites", async (req, res) => {
+  try {
+    const publicites = await Publicite.find();
+    res.json(publicites);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des publicités", error });
+  }
+});
+
+// Créer une publicité
+app.post("/createPublicite", async (req, res) => {
+  try {
+    const publicite = new Publicite(req.body);
+    await publicite.save();
+    res.status(201).json(publicite);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création de la publicité", error });
+  }
+});
+
+// Mettre à jour une publicité par nom
+app.put("/updatePubliciteByNom/:nom", async (req, res) => {
+  try {
+    const publicite = await Publicite.findOneAndUpdate({ nom: req.params.nom }, req.body, { new: true });
+    if (!publicite) {
+      return res.status(404).json({ message: "Publicité non trouvée" });
+    }
+    res.json(publicite);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la mise à jour de la publicité", error });
+  }
+});
+
+// Supprimer une publicité par nom
+app.delete("/deletePubliciteByNom/:nom", async (req, res) => {
+  try {
+    const publicite = await Publicite.findOneAndDelete({ nom: req.params.nom });
+    if (!publicite) {
+      return res.status(404).json({ message: "Publicité non trouvée" });
+    }
+    res.json({ message: "Publicité supprimée avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression de la publicité", error });
+  }
+});
+
+app.get("/getReductions", async (req, res) => {
+  try {
+    const reductions = await Reduction.find();
+    res.json(reductions);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des réductions", error });
+  }
+});
+
+app.post("/createReduction", async (req, res) => {
+  try {
+    const reduction = new Reduction(req.body);
+    await reduction.save();
+    res.status(201).json(reduction);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création de la réduction", error });
+  }
+});
+
+app.put("/updateReductionByNom/:nom", async (req, res) => {
+  try {
+    const reduction = await Reduction.findOneAndUpdate({ nom: req.params.nom }, req.body, { new: true });
+    if (!reduction) {
+      return res.status(404).json({ message: "Réduction non trouvée" });
+    }
+    res.json(reduction);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la mise à jour de la réduction", error });
+  }
+});
+
+app.delete("/deleteReductionByNom/:nom", async (req, res) => {
+  try {
+    const reduction = await Reduction.findOneAndDelete({ nom: req.params.nom });
+    if (!reduction) {
+      return res.status(404).json({ message: "Réduction non trouvée" });
+    }
+    res.json({ message: "Réduction supprimée avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression de la réduction", error });
+  }
+});
+
+app.get("/getArticleReductions", async (req, res) => {
+  try {
+    const articleReductions = await ArticleReduction.find();
+    res.json(articleReductions);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des relations article-réduction", error });
+  }
+});
+
+// Créer une relation article-réduction
+app.post("/createArticleReduction", async (req, res) => {
+  try {
+    const articleReduction = new ArticleReduction(req.body);
+    await articleReduction.save();
+    res.status(201).json(articleReduction);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création de la relation article-réduction", error });
+  }
+});
+
+// Mettre à jour une relation article-réduction
+app.put("/updateArticleReduction/:id", async (req, res) => {
+  try {
+    const articleReduction = await ArticleReduction.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!articleReduction) {
+      return res.status(404).json({ message: "Relation article-réduction non trouvée" });
+    }
+    res.json(articleReduction);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la mise à jour de la relation article-réduction", error });
+  }
+});
+
+// Supprimer une relation article-réduction
+app.delete("/deleteArticleReduction/:id", async (req, res) => {
+  try {
+    const articleReduction = await ArticleReduction.findByIdAndDelete(req.params.id);
+    if (!articleReduction) {
+      return res.status(404).json({ message: "Relation article-réduction non trouvée" });
+    }
+    res.json({ message: "Relation article-réduction supprimée avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression de la relation article-réduction", error });
   }
 });
 const PORT = process.env.PORT || 5000;

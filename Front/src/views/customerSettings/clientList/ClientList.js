@@ -115,7 +115,7 @@ const ClientList = () => {
       <CButton color="primary" onClick={() => setShowModal(true)}>
         Ajouter un client
       </CButton>
-
+      <h3>Liste des Clients</h3>
       <CTable
         columns={columns}
         items={clients.map((client) => ({
@@ -123,10 +123,10 @@ const ClientList = () => {
           actions: (
             <div>
               <CButton color="warning" size="sm" onClick={() => openEditModal(client)}>
-                Modifier
+              <span style={{ fontSize: "1.2em" }}>✏️</span>
               </CButton>
               <CButton color="danger" size="sm" onClick={() => handleDeleteClient(client.email)}>
-                Supprimer
+              <span style={{ fontSize: "1.2em" }}>🗑️</span>
               </CButton>
             </div>
           ),

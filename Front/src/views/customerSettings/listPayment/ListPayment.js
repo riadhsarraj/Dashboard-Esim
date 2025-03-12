@@ -107,6 +107,7 @@ const ListPayment = () => {
       <CButton color="primary" onClick={() => setShowModal(true)}>
         Ajouter une carte de paiement
       </CButton>
+      <h3>Liste des Cartes de paiment</h3>
       <CTable
         columns={columns}
         items={cards.map((card) => ({
@@ -114,10 +115,10 @@ const ListPayment = () => {
           actions: (
             <div>
               <CButton color="warning" size="sm" onClick={() => openEditModal(card)}>
-                Modifier
+              <span style={{ fontSize: "1.2em" }}>✏️</span>
               </CButton>
               <CButton color="danger" size="sm" onClick={() => handleDeleteCard(card.cardNumber)}>
-                Supprimer
+              <span style={{ fontSize: "1.2em" }}>🗑️</span>
               </CButton>
             </div>
           ),

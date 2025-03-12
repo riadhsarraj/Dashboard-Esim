@@ -118,19 +118,19 @@ const ExampleTable = () => {
       <CButton color="primary" onClick={() => setShowModal(true)}>
         Ajouter un utilisateur
       </CButton>
-
+      <h3>Liste des Utilisateurs</h3>
       <CTable
         columns={columns}
         items={admins.map((admin) => ({
           ...admin,
           actions: (
             <div>
-              <CButton color="warning" size="sm" onClick={() => openEditModal(admin)}>
-                Modifier
-              </CButton>
-              <CButton color="danger" size="sm" onClick={() => handleDeleteUser(admin.email)}>
-                Supprimer
-              </CButton>
+            <CButton color="warning" size="sm" onClick={() => openEditModal(admin)}>
+            <span style={{ fontSize: "1.2em" }}>✏️</span>
+            </CButton>
+            <CButton color="danger" size="sm" onClick={() => handleDeleteUser(admin.email)}>
+            <span style={{ fontSize: "1.2em" }}>🗑️</span>
+            </CButton>
             </div>
           ),
         }))}
