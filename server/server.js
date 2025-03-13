@@ -23,6 +23,12 @@ const ArticleModel = require("./models/Article");
 const Publicite = require("./models/Advertisment");
 const Reduction = require("./models/Discount");
 const ArticleReduction = require("./models/DiscountItems");
+const CommandeStatus = require("./models/OrderStatus");
+const CommandeDetail = require("./models/OrderDetails");
+const Commande = require("./models/Orders");
+const Transaction = require("./models/Transaction");
+const Privilege = require("./models/Privileges");
+const ClientInfo = require("./models/ProfileIdentifier");
 // Connexion à MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
@@ -858,6 +864,231 @@ app.delete("/deleteArticleReduction/:id", async (req, res) => {
     res.json({ message: "Relation article-réduction supprimée avec succès" });
   } catch (error) {
     res.status(500).json({ message: "Erreur lors de la suppression de la relation article-réduction", error });
+  }
+});
+
+app.get("/getCommandeStatus", async (req, res) => {
+  try {
+    const commandeStatus = await CommandeStatus.find();
+    res.json(commandeStatus);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des statuts des commandes", error });
+  }
+});
+
+// Créer un statut de commande
+app.post("/createCommandeStatus", async (req, res) => {
+  try {
+    const commandeStatus = new CommandeStatus(req.body);
+    await commandeStatus.save();
+    res.status(201).json(commandeStatus);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création du statut de commande", error });
+  }
+});
+
+// Mettre à jour un statut de commande par nom
+app.put("/updateCommandeStatusByNom/:nom", async (req, res) => {
+  try {
+    const commandeStatus = await CommandeStatus.findOneAndUpdate({ nom: req.params.nom }, req.body, { new: true });
+    if (!commandeStatus) {
+      return res.status(404).json({ message: "Statut de commande non trouvé" });
+    }
+    res.json(commandeStatus);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la mise à jour du statut de commande", error });
+  }
+});
+
+// Supprimer un statut de commande par nom
+app.delete("/deleteCommandeStatusByNom/:nom", async (req, res) => {
+  try {
+    const commandeStatus = await CommandeStatus.findOneAndDelete({ nom: req.params.nom });
+    if (!commandeStatus) {
+      return res.status(404).json({ message: "Statut de commande non trouvé" });
+    }
+    res.json({ message: "Statut de commande supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression du statut de commande", error });
+  }
+});
+
+app.get("/getCommandes", async (req, res) => {
+  try {
+    const commandes = await Commande.find();
+    res.json(commandes);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des commandes", error });
+  }
+});
+
+// Créer une commande
+app.post("/createCommande", async (req, res) => {
+  try {
+    const commande = new Commande({ ...req.body, status: "CREATED" });
+    await commande.save();
+    res.status(201).json(commande);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création de la commande", error });
+  }
+});
+
+// Mettre à jour le statut d'une commande
+app.put("/updateCommandeStatus/:numeroCommande", async (req, res) => {
+  try {
+    const commande = await Commande.findOneAndUpdate({ numeroCommande: req.params.numeroCommande }, { status: req.body.status }, { new: true });
+    if (!commande) {
+      return res.status(404).json({ message: "Commande non trouvée" });
+    }
+    res.json(commande);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la mise à jour du statut", error });
+  }
+});
+
+// Récupérer les détails d'une commande
+app.get("/getCommandeDetails/:numeroCommande", async (req, res) => {
+  try {
+    const details = await CommandeDetail.find({ numeroCommande: req.params.numeroCommande });
+    res.json(details);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des détails", error });
+  }
+});
+
+// Récupérer les transactions d'une commande
+app.get("/getCommandeTransactions/:numeroCommande", async (req, res) => {
+  try {
+    const transactions = await Transaction.find({ numeroCommande: req.params.numeroCommande });
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des transactions", error });
+  }
+});
+
+app.get("/getAllTransactions", async (req, res) => {
+  try {
+    const transactions = await Transaction.find();
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des transactions", error });
+  }
+});
+
+// Créer une transaction
+app.post("/createTransaction", async (req, res) => {
+  try {
+    const transaction = new Transaction(req.body);
+    await transaction.save();
+    res.status(201).json(transaction);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création de la transaction", error });
+  }
+});
+
+app.get("/getPrivileges", async (req, res) => {
+  try {
+    const privileges = await Privilege.find();
+    res.json(privileges);
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la récupération des privilèges", error });
+  }
+});
+
+// Créer un privilège
+app.post("/createPrivilege", async (req, res) => {
+  try {
+    const privilege = new Privilege(req.body);
+    await privilege.save();
+    res.status(201).json(privilege);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la création du privilège", error });
+  }
+});
+
+// Mettre à jour un privilège
+app.put("/updatePrivilege/:id", async (req, res) => {
+  try {
+    const privilege = await Privilege.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!privilege) {
+      return res.status(404).json({ message: "Privilège non trouvé" });
+    }
+    res.json(privilege);
+  } catch (error) {
+    res.status(400).json({ message: "Erreur lors de la mise à jour du privilège", error });
+  }
+});
+
+// Supprimer un privilège
+app.delete("/deletePrivilege/:id", async (req, res) => {
+  try {
+    const privilege = await Privilege.findByIdAndDelete(req.params.id);
+    if (!privilege) {
+      return res.status(404).json({ message: "Privilège non trouvé" });
+    }
+    res.json({ message: "Privilège supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de la suppression du privilège", error });
+  }
+});
+
+app.get("/getClientInfos", async (req, res) => {
+  try {
+    const clientInfos = await ClientInfo.find(); // Supprimez .populate("commands") pour tester
+    res.json(clientInfos);
+  } catch (error) {
+    console.error("Erreur dans /getClientInfos:", error);
+    res.status(500).json({ message: "Erreur lors de la récupération des clients", error: error.message });
+  }
+});
+
+app.get("/getClientInfos", async (req, res) => {
+  try {
+    const clientInfos = await ClientInfo.find(); // Sans .populate pour tester
+    res.json(clientInfos);
+  } catch (error) {
+    console.error("Erreur dans /getClientInfos:", error);
+    res.status(500).json({ message: "Erreur lors de la récupération des clients", error: error.message });
+  }
+});
+
+// Créer un client
+app.post("/createClientInfo", async (req, res) => {
+  try {
+    const clientInfo = new ClientInfo(req.body);
+    await clientInfo.save();
+    res.status(201).json(clientInfo);
+  } catch (error) {
+    console.error("Erreur dans /createClientInfo:", error);
+    res.status(400).json({ message: "Erreur lors de la création du client", error: error.message });
+  }
+});
+
+// Mettre à jour un client
+app.put("/updateClientInfo/:id", async (req, res) => {
+  try {
+    const clientInfo = await ClientInfo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!clientInfo) {
+      return res.status(404).json({ message: "Client non trouvé" });
+    }
+    res.json(clientInfo);
+  } catch (error) {
+    console.error("Erreur dans /updateClientInfo:", error);
+    res.status(400).json({ message: "Erreur lors de la mise à jour du client", error: error.message });
+  }
+});
+
+// Supprimer un client
+app.delete("/deleteClientInfo/:id", async (req, res) => {
+  try {
+    const clientInfo = await ClientInfo.findByIdAndDelete(req.params.id);
+    if (!clientInfo) {
+      return res.status(404).json({ message: "Client non trouvé" });
+    }
+    res.json({ message: "Client supprimé avec succès" });
+  } catch (error) {
+    console.error("Erreur dans /deleteClientInfo:", error);
+    res.status(500).json({ message: "Erreur lors de la suppression du client", error: error.message });
   }
 });
 const PORT = process.env.PORT || 5000;

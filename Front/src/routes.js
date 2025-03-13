@@ -2,7 +2,7 @@ import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
-const Admins = React.lazy(() => import('./views/account/admins/Admins'))
+const privilège = React.lazy(() => import('./views/account/privilège/Privilège'))
 const Users = React.lazy(() => import('./views/account/users/Users'))
 const Orders = React.lazy(() => import('./views/followUp/orders/Orders'))
 const Payment = React.lazy(() => import('./views/followUp/payment/Payment'))
@@ -20,7 +20,10 @@ const Article = React.lazy(() => import('./views/applicationSettings/Articles/Ar
 const Advertisements = React.lazy(() => import('./views/applicationSettings/Advertisements/Advertisements'))
 const Discounts = React.lazy(() => import('./views/applicationSettings/Discounts/Discounts'))
 const DiscountItems = React.lazy(() => import('./views/applicationSettings/DiscountedItems/DiscountItems'))
-
+const OrderS = React.lazy(() => import('./views/OrderSettings/OrderStatus/OrderS'))
+const ListOrderS = React.lazy(() => import('./views/OrderSettings/ListOrders/ListOrders'))
+const CommandTrans = React.lazy(() => import('./views/OrderSettings/CommandTransactions/CommandTrans'))
+const ProfileIdentifier = React.lazy(() => import('./views/applicationSettings/ProfileIdentifiers/ProfileIdentifiers'))
 const Alerts = React.lazy(() => import('./views/notifications/alerts/Alerts'))
 const Badges = React.lazy(() => import('./views/notifications/badges/Badges'))
 const Modals = React.lazy(() => import('./views/notifications/modals/Modals'))
@@ -33,7 +36,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
-  { path: '/account/admins', name: 'admins', element: Admins },
+  { path: '/account/privilège', name: 'privilège', element: privilège },
   { path: '/account/users', name: 'users', element: Users },
   { path: '/customerSettings/clientList', name: 'clientList', element: ClientList },
   { path: '/customerSettings/listPayment', name: 'listPayment', element: ListPayment },
@@ -47,6 +50,11 @@ const routes = [
   { path: '/applicationSettings/Advertisements', name: 'Advertisements', element: Advertisements },
   { path: '/applicationSettings/Discounts', name: 'Discounts', element: Discounts },
   { path: '/applicationSettings/DiscountedItems', name: 'DiscountItems', element: DiscountItems },
+  { path: '/Order settings/OrderStatus', name: 'OrderS', element: OrderS },
+  { path: '/Order settings/ListOrders', name: 'ListOrderS', element: ListOrderS },
+  { path: '/Order settings/CommandTransactions', name: 'CommandTrans', element: CommandTrans },
+  { path: '/customerSettings/clientInformation', name: 'ProfileIdentifier', element: ProfileIdentifier },
+
 
   { path: '/followUp/orders', name: 'orders', element: Orders },
   { path: '/followUp/payment', name: 'payment', element: Payment },
