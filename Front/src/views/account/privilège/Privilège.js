@@ -34,7 +34,7 @@ const Privileges = () => {
   // Récupérer tous les privilèges
   const fetchPrivileges = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getPrivileges");
+      const response = await axios.get("http://localhost:5000/privileges/getPrivileges");
       setPrivileges(response.data);
     } catch (error) {
       setError(`Erreur lors de la récupération des privilèges: ${error.response?.data?.message || error.message}`);
@@ -51,7 +51,7 @@ const Privileges = () => {
   // Ajouter un privilège
   const handleAddPrivilege = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createPrivilege", newPrivilege);
+      const response = await axios.post("http://localhost:5000/privileges/createPrivilege", newPrivilege);
       if (response.status === 201) {
         setShowAddModal(false);
         setNewPrivilege({ label: "", description: "" });
@@ -72,7 +72,7 @@ const Privileges = () => {
 
   const handleUpdatePrivilege = async () => {
     try {
-      const response = await axios.put(`http://localhost:5000/updatePrivilege/${selectedPrivilege._id}`, selectedPrivilege);
+      const response = await axios.put(`http://localhost:5000/privileges/updatePrivilege/${selectedPrivilege._id}`, selectedPrivilege);
       if (response.status === 200) {
         setShowEditModal(false);
         fetchPrivileges();
@@ -88,7 +88,7 @@ const Privileges = () => {
   const handleDeletePrivilege = async (id) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce privilège ?")) {
       try {
-        const response = await axios.delete(`http://localhost:5000/deletePrivilege/${id}`);
+        const response = await axios.delete(`http://localhost:5000/privileges/deletePrivilege/${id}`);
         if (response.status === 200) {
           fetchPrivileges();
           alert("Privilège supprimé avec succès");

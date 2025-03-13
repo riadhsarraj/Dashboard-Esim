@@ -21,7 +21,7 @@ const ClientList = () => {
   // Récupérer les clients
   const fetchClients = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getClients");
+      const response = await axios.get("http://localhost:5000/clients/getClients");
       setClients(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des clients");
@@ -38,7 +38,7 @@ const ClientList = () => {
   // Ajouter un client
   const handleAddClient = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createClient", newClient);
+      const response = await axios.post("http://localhost:5000/clients/createClient", newClient);
       if (response.status === 200) {
         setShowModal(false);
         setNewClient({ username: "", email: "", cin: "", phone: "" });
@@ -54,7 +54,7 @@ const ClientList = () => {
   const handleUpdateClient = async (email, updatedData) => {
     try {
       const encodedEmail = encodeURIComponent(email); // Encoder l'email
-      const response = await axios.put(`http://localhost:5000/updateClientByEmail/${encodedEmail}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/clients/updateClientByEmail/${encodedEmail}`, updatedData);
       if (response.status === 200) {
         alert("Client mis à jour avec succès");
         fetchClients(); // Rafraîchir la liste des clients
@@ -69,7 +69,7 @@ const ClientList = () => {
   const handleDeleteClient = async (email) => {
     try {
       const encodedEmail = encodeURIComponent(email); // Encoder l'email
-      const response = await axios.delete(`http://localhost:5000/deleteClientByEmail/${encodedEmail}`);
+      const response = await axios.delete(`http://localhost:5000/clients/deleteClientByEmail/${encodedEmail}`);
       if (response.status === 200) {
         alert("Client supprimé avec succès");
         fetchClients(); // Rafraîchir la liste des clients

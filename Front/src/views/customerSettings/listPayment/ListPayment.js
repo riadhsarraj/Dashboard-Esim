@@ -21,7 +21,7 @@ const ListPayment = () => {
 
   const fetchCards = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getCards");
+      const response = await axios.get("http://localhost:5000/cards/getCards");
       setCards(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des cartes");
@@ -36,7 +36,7 @@ const ListPayment = () => {
   }, []);
   const handleAddCard = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createCard", newCard);
+      const response = await axios.post("http://localhost:5000/cards/createCard", newCard);
       if (response.status === 200) {
         setNewCard({ holderName: "", cardNumber: "", expirationDate: "", cardType: "", email: "" });
         setShowModal(false);
@@ -50,7 +50,7 @@ const ListPayment = () => {
   };
   const handleUpdateCard = async (cardNumber, updatedData) => {
     try {
-      const response = await axios.put(`http://localhost:5000/updateCardByNumber/${cardNumber}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/cards/updateCardByNumber/${cardNumber}`, updatedData);
       if (response.status === 200) {
         setShowModal(false);
         fetchCards();
@@ -64,7 +64,7 @@ const ListPayment = () => {
 
   const handleDeleteCard = async (cardNumber) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/deleteCardByNumber/${cardNumber}`);
+      const response = await axios.delete(`http://localhost:5000/cards/deleteCardByNumber/${cardNumber}`);
       if (response.status === 200) {
         fetchCards();
         alert("Carte de paiement supprimée avec succès");

@@ -33,9 +33,9 @@ const ArticleReductions = () => {
   const fetchData = async () => {
     try {
       const [articleResponse, reductionResponse, articleReductionResponse] = await Promise.all([
-        axios.get("http://localhost:5000/getArticles"),
-        axios.get("http://localhost:5000/getReductions"),
-        axios.get("http://localhost:5000/getArticleReductions"),
+        axios.get("http://localhost:5000/articles/getArticles"),
+        axios.get("http://localhost:5000/discounts/getReductions"),
+        axios.get("http://localhost:5000/discounts/getArticleReductions"),
       ]);
       setArticles(articleResponse.data);
       setReductions(reductionResponse.data);
@@ -55,7 +55,7 @@ const ArticleReductions = () => {
   // Ajouter une relation article-réduction
   const handleAddArticleReduction = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createArticleReduction", newArticleReduction);
+      const response = await axios.post("http://localhost:5000/discounts/createArticleReduction", newArticleReduction);
       if (response.status === 201) {
         setShowModal(false);
         setNewArticleReduction({ article: "", reduction: "" });
@@ -71,7 +71,7 @@ const ArticleReductions = () => {
   // Modifier une relation article-réduction
   const handleUpdateArticleReduction = async (id, updatedData) => {
     try {
-      const response = await axios.put(`http://localhost:5000/updateArticleReduction/${id}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/discounts/updateArticleReduction/${id}`, updatedData);
       if (response.status === 200) {
         alert("Relation article-réduction mise à jour avec succès");
         fetchData();
@@ -85,7 +85,7 @@ const ArticleReductions = () => {
   // Supprimer une relation article-réduction
   const handleDeleteArticleReduction = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/deleteArticleReduction/${id}`);
+      const response = await axios.delete(`http://localhost:5000/discounts/deleteArticleReduction/${id}`);
       if (response.status === 200) {
         alert("Relation article-réduction supprimée avec succès");
         fetchData();

@@ -31,7 +31,7 @@ const CommandeStatus = () => {
   // Récupérer les statuts des commandes
   const fetchCommandeStatus = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getCommandeStatus");
+      const response = await axios.get("http://localhost:5000/orders/getCommandeStatus");
       setCommandeStatus(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des statuts des commandes");
@@ -48,7 +48,7 @@ const CommandeStatus = () => {
   // Ajouter un statut de commande
   const handleAddCommandeStatus = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createCommandeStatus", newCommandeStatus);
+      const response = await axios.post("http://localhost:5000/orders/createCommandeStatus", newCommandeStatus);
       if (response.status === 201) {
         setShowModal(false);
         setNewCommandeStatus({ nom: "", description: "", evenements: "" });
@@ -65,7 +65,7 @@ const CommandeStatus = () => {
   const handleUpdateCommandeStatus = async (nom, updatedData) => {
     try {
       const encodedNom = encodeURIComponent(nom);
-      const response = await axios.put(`http://localhost:5000/updateCommandeStatusByNom/${encodedNom}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/orders/updateCommandeStatusByNom/${encodedNom}`, updatedData);
       if (response.status === 200) {
         alert("Statut de commande mis à jour avec succès");
         fetchCommandeStatus();
@@ -80,7 +80,7 @@ const CommandeStatus = () => {
   const handleDeleteCommandeStatus = async (nom) => {
     try {
       const encodedNom = encodeURIComponent(nom);
-      const response = await axios.delete(`http://localhost:5000/deleteCommandeStatusByNom/${encodedNom}`);
+      const response = await axios.delete(`http://localhost:5000/orders/deleteCommandeStatusByNom/${encodedNom}`);
       if (response.status === 200) {
         alert("Statut de commande supprimé avec succès");
         fetchCommandeStatus();

@@ -43,7 +43,7 @@ const Reductions = () => {
   // Récupérer les réductions
   const fetchReductions = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getReductions");
+      const response = await axios.get("http://localhost:5000/discounts/getReductions");
       setReductions(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des réductions");
@@ -60,7 +60,7 @@ const Reductions = () => {
   // Ajouter une réduction
   const handleAddReduction = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createReduction", newReduction);
+      const response = await axios.post("http://localhost:5000/discounts/createReduction", newReduction);
       if (response.status === 201) {
         setShowModal(false);
         setNewReduction({
@@ -85,7 +85,7 @@ const Reductions = () => {
   const handleUpdateReduction = async (nom, updatedData) => {
     try {
       const encodedNom = encodeURIComponent(nom);
-      const response = await axios.put(`http://localhost:5000/updateReductionByNom/${encodedNom}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/discounts/updateReductionByNom/${encodedNom}`, updatedData);
       if (response.status === 200) {
         alert("Réduction mise à jour avec succès");
         fetchReductions();
@@ -100,7 +100,7 @@ const Reductions = () => {
   const handleDeleteReduction = async (nom) => {
     try {
       const encodedNom = encodeURIComponent(nom);
-      const response = await axios.delete(`http://localhost:5000/deleteReductionByNom/${encodedNom}`);
+      const response = await axios.delete(`http://localhost:5000/discounts/deleteReductionByNom/${encodedNom}`);
       if (response.status === 200) {
         alert("Réduction supprimée avec succès");
         fetchReductions();

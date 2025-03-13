@@ -34,9 +34,9 @@ const ItemList = () => {
   const fetchData = async () => {
     try {
       const [itemsResponse, categoriesResponse, kitsResponse] = await Promise.all([
-        axios.get("http://localhost:5000/getItems"),
-        axios.get("http://localhost:5000/getCategories"),
-        axios.get("http://localhost:5000/getKits"),
+        axios.get("http://localhost:5000/items/getItems"),
+        axios.get("http://localhost:5000/categories/getCategories"),
+        axios.get("http://localhost:5000/kits/getKits"),
       ]);
       setItems(itemsResponse.data);
       setCategories(categoriesResponse.data);
@@ -56,7 +56,7 @@ const ItemList = () => {
   // Ajouter un item
   const handleAddItem = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createItem", newItem);
+      const response = await axios.post("http://localhost:5000/items/createItem", newItem);
       if (response.status === 201) {
         setShowModal(false);
         setNewItem({ name: "", description: "", categoryId: "", kitId: "" });
@@ -72,7 +72,7 @@ const ItemList = () => {
   const handleUpdateItem = async (name, updatedData) => {
     try {
       const encodedName = encodeURIComponent(name);
-      const response = await axios.put(`http://localhost:5000/updateItemByName/${encodedName}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/items/updateItemByName/${encodedName}`, updatedData);
       if (response.status === 200) {
         alert("Item mis à jour avec succès");
         fetchData();
@@ -87,7 +87,7 @@ const ItemList = () => {
   const handleDeleteItem = async (name) => {
     try {
       const encodedName = encodeURIComponent(name);
-      const response = await axios.delete(`http://localhost:5000/deleteItemByName/${encodedName}`);
+      const response = await axios.delete(`http://localhost:5000/items/deleteItemByName/${encodedName}`);
       if (response.status === 200) {
         alert("Item supprimé avec succès");
         fetchData();

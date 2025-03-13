@@ -23,7 +23,7 @@ const ListSubscriptions = () => {
 
   const fetchSubscriptions = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getSubscriptions");
+      const response = await axios.get("http://localhost:5000/subscriptions/getSubscriptions");
       setSubscriptions(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des abonnements");
@@ -34,7 +34,7 @@ const ListSubscriptions = () => {
 
   const handleAddSubscription = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createSubscription", newSubscription);
+      const response = await axios.post("http://localhost:5000/subscriptions/createSubscription", newSubscription);
       if (response.status === 200) {
         setNewSubscription({ profileId: "", note: "default" });
         setShowModal(false);
@@ -49,7 +49,7 @@ const ListSubscriptions = () => {
 
   const handleUpdateSubscription = async (profileId, updatedData) => {
     try {
-      const response = await axios.put(`http://localhost:5000/updateSubscription/${profileId}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/subscriptions/updateSubscription/${profileId}`, updatedData);
       if (response.status === 200) {
         setShowModal(false);
         fetchSubscriptions();
@@ -62,7 +62,7 @@ const ListSubscriptions = () => {
 
   const handleDeleteSubscription = async (profileId) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/deleteSubscription/${profileId}`);
+      const response = await axios.delete(`http://localhost:5000/subscriptions/deleteSubscription/${profileId}`);
       if (response.status === 200) {
         fetchSubscriptions();
         alert("Abonnement supprimé avec succès");

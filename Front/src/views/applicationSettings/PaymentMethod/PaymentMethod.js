@@ -44,7 +44,7 @@ const PaymentMethodList = () => {
   // Récupérer les modes de paiement
   const fetchPaymentMethods = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getPaymentMethods");
+      const response = await axios.get("http://localhost:5000/paymentMethods/getPaymentMethods");
       setPaymentMethods(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des modes de paiement");
@@ -61,7 +61,7 @@ const PaymentMethodList = () => {
   // Ajouter un mode de paiement
   const handleAddPaymentMethod = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createPaymentMethod", newPaymentMethod);
+      const response = await axios.post("http://localhost:5000/paymentMethods/createPaymentMethod", newPaymentMethod);
       if (response.status === 201) {
         setShowModal(false);
         setNewPaymentMethod({
@@ -87,7 +87,7 @@ const PaymentMethodList = () => {
   // Modifier un mode de paiement
   const handleUpdatePaymentMethod = async (name) => {
     try {
-      const response = await axios.put(`http://localhost:5000/updatePaymentMethodByName/${name}`, editPaymentMethod);
+      const response = await axios.put(`http://localhost:5000/paymentMethods/updatePaymentMethodByName/${name}`, editPaymentMethod);
       if (response.status === 200) {
         setShowModal(false);
         setEditPaymentMethod(null);
@@ -104,7 +104,7 @@ const PaymentMethodList = () => {
   const handleDeletePaymentMethod = async (name) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce mode de paiement ?")) {
       try {
-        const response = await axios.delete(`http://localhost:5000/deletePaymentMethodByName/${name}`);
+        const response = await axios.delete(`http://localhost:5000/paymentMethods/deletePaymentMethodByName/${name}`);
         if (response.status === 200) {
           fetchPaymentMethods();
         }

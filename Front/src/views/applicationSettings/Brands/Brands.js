@@ -30,7 +30,7 @@ const BrandList = () => {
   // Récupérer les marques
   const fetchBrands = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getBrands");
+      const response = await axios.get("http://localhost:5000/brands/getBrands");
       setBrands(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des marques");
@@ -47,7 +47,7 @@ const BrandList = () => {
   // Ajouter une marque
   const handleAddBrand = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createBrand", newBrand);
+      const response = await axios.post("http://localhost:5000/brands/createBrand", newBrand);
       if (response.status === 201) {
         setShowModal(false);
         setNewBrand({ name: "", description: "" });
@@ -64,7 +64,7 @@ const BrandList = () => {
   const handleUpdateBrand = async (name, updatedData) => {
     try {
       const encodedName = encodeURIComponent(name);
-      const response = await axios.put(`http://localhost:5000/updateBrandByName/${encodedName}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/brands/updateBrandByName/${encodedName}`, updatedData);
       if (response.status === 200) {
         alert("Marque mise à jour avec succès");
         fetchBrands();
@@ -79,7 +79,7 @@ const BrandList = () => {
   const handleDeleteBrand = async (name) => {
     try {
       const encodedName = encodeURIComponent(name);
-      const response = await axios.delete(`http://localhost:5000/deleteBrandByName/${encodedName}`);
+      const response = await axios.delete(`http://localhost:5000/brands/deleteBrandByName/${encodedName}`);
       if (response.status === 200) {
         alert("Marque supprimée avec succès");
         fetchBrands();

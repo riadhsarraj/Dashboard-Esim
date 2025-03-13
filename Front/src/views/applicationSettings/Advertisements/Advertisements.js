@@ -33,7 +33,7 @@ const Publicites = () => {
   // Récupérer les publicités
   const fetchPublicites = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getPublicites");
+      const response = await axios.get("http://localhost:5000/advertisements/getPublicites");
       setPublicites(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des publicités");
@@ -50,7 +50,7 @@ const Publicites = () => {
   // Ajouter une publicité
   const handleAddPublicite = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createPublicite", newPublicite);
+      const response = await axios.post("http://localhost:5000/advertisements/createPublicite", newPublicite);
       if (response.status === 201) {
         setShowModal(false);
         setNewPublicite({ nom: "", contenu: "", type: "", popup: "Popup" });
@@ -67,7 +67,7 @@ const Publicites = () => {
   const handleUpdatePublicite = async (nom, updatedData) => {
     try {
       const encodedNom = encodeURIComponent(nom);
-      const response = await axios.put(`http://localhost:5000/updatePubliciteByNom/${encodedNom}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/advertisements/updatePubliciteByNom/${encodedNom}`, updatedData);
       if (response.status === 200) {
         alert("Publicité mise à jour avec succès");
         fetchPublicites();
@@ -82,7 +82,7 @@ const Publicites = () => {
   const handleDeletePublicite = async (nom) => {
     try {
       const encodedNom = encodeURIComponent(nom);
-      const response = await axios.delete(`http://localhost:5000/deletePubliciteByNom/${encodedNom}`);
+      const response = await axios.delete(`http://localhost:5000/advertisements/deletePubliciteByNom/${encodedNom}`);
       if (response.status === 200) {
         alert("Publicité supprimée avec succès");
         fetchPublicites();

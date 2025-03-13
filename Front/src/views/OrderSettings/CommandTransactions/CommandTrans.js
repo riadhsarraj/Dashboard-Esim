@@ -41,7 +41,7 @@ const Transactions = () => {
   // Récupérer toutes les transactions
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getAllTransactions");
+      const response = await axios.get("http://localhost:5000/transactions/getAllTransactions");
       setTransactions(response.data);
     } catch (error) {
       setError(`Erreur lors de la récupération des transactions: ${error.response?.data?.message || error.message}`);
@@ -58,7 +58,7 @@ const Transactions = () => {
   // Ajouter une transaction
   const handleAddTransaction = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createTransaction", newTransaction);
+      const response = await axios.post("http://localhost:5000/transactions/createTransaction", newTransaction);
       if (response.status === 201) {
         setShowAddModal(false);
         setNewTransaction({

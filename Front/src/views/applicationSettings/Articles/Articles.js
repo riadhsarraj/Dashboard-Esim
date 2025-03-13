@@ -35,7 +35,7 @@ const ArticleList = () => {
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getArticles");
+      const response = await axios.get("http://localhost:5000/articles/getArticles");
       setArticles(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des articles");
@@ -51,7 +51,7 @@ const ArticleList = () => {
 
   const handleAddArticle = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createArticle", newArticle);
+      const response = await axios.post("http://localhost:5000/articles/createArticle", newArticle);
       if (response.status === 201) {
         setShowModal(false);
         setNewArticle({ name: "", description: "", barcode: "", price: 0, images: [] });
@@ -67,7 +67,7 @@ const ArticleList = () => {
   const handleUpdateArticle = async (name, updatedData) => {
     try {
       const encodedName = encodeURIComponent(name);
-      const response = await axios.put(`http://localhost:5000/updateArticleByName/${encodedName}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/articles/updateArticleByName/${encodedName}`, updatedData);
       if (response.status === 200) {
         alert("Article mis à jour avec succès");
         fetchArticles();
@@ -81,7 +81,7 @@ const ArticleList = () => {
   const handleDeleteArticle = async (name) => {
     try {
       const encodedName = encodeURIComponent(name);
-      const response = await axios.delete(`http://localhost:5000/deleteArticleByName/${encodedName}`);
+      const response = await axios.delete(`http://localhost:5000/articles/deleteArticleByName/${encodedName}`);
       if (response.status === 200) {
         alert("Article supprimé avec succès");
         fetchArticles();

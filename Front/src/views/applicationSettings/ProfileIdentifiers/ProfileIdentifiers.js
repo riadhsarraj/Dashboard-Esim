@@ -45,7 +45,7 @@ const Clients = () => {
 
   const fetchClientInfos = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getClientInfos");
+      const response = await axios.get("http://localhost:5000/clientInfos/getClientInfos");
       setClientInfos(response.data || []);
     } catch (error) {
       setError(`Erreur lors de la récupération des clients: ${error.response?.data?.message || error.message}`);
@@ -62,7 +62,7 @@ const Clients = () => {
 
   const handleAddClientInfo = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createClientInfo", newClientInfo);
+      const response = await axios.post("http://localhost:5000/clientInfos/createClientInfo", newClientInfo);
       if (response.status === 201) {
         setShowAddModal(false);
         setNewClientInfo({
@@ -90,7 +90,7 @@ const Clients = () => {
 
   const handleUpdateClientInfo = async () => {
     try {
-      const response = await axios.put(`http://localhost:5000/updateClientInfo/${selectedClientInfo._id}`, selectedClientInfo);
+      const response = await axios.put(`http://localhost:5000/clientInfos/updateClientInfo/${selectedClientInfo._id}`, selectedClientInfo);
       if (response.status === 200) {
         setShowEditModal(false);
         fetchClientInfos();
@@ -105,7 +105,7 @@ const Clients = () => {
   const handleDeleteClientInfo = async (id) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
       try {
-        const response = await axios.delete(`http://localhost:5000/deleteClientInfo/${id}`);
+        const response = await axios.delete(`http://localhost:5000/clientInfos/deleteClientInfo/${id}`);
         if (response.status === 200) {
           fetchClientInfos();
           alert("Client supprimé avec succès");

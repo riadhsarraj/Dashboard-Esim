@@ -50,8 +50,8 @@ const Commandes = () => {
   const fetchData = async () => {
     try {
       const [commandesResponse, statusResponse] = await Promise.all([
-        axios.get("http://localhost:5000/getCommandes"),
-        axios.get("http://localhost:5000/getCommandeStatus"),
+        axios.get("http://localhost:5000/orders/getCommandes"),
+        axios.get("http://localhost:5000/orders/getCommandeStatus"),
       ]);
       setCommandes(commandesResponse.data);
       setStatusList(statusResponse.data);
@@ -70,7 +70,7 @@ const Commandes = () => {
   // Ajouter une commande
   const handleAddCommande = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createCommande", newCommande);
+      const response = await axios.post("http://localhost:5000/orders/createCommande", newCommande);
       if (response.status === 201) {
         setShowAddModal(false);
         setNewCommande({ numeroCommande: "", prix: "", quantite: "", fournisseur: "", detailsClient: "" });
@@ -86,7 +86,7 @@ const Commandes = () => {
   // Mettre à jour le statut d'une commande
   const handleUpdateStatus = async (numeroCommande, newStatus) => {
     try {
-      const response = await axios.put(`http://localhost:5000/updateCommandeStatus/${numeroCommande}`, { status: newStatus });
+      const response = await axios.put(`http://localhost:5000/orders/updateCommandeStatus/${numeroCommande}`, { status: newStatus });
       if (response.status === 200) {
         alert("Statut mis à jour avec succès");
         fetchData();
@@ -100,7 +100,7 @@ const Commandes = () => {
   // Récupérer les détails d'une commande
   const handleShowDetails = async (numeroCommande) => {
     try {
-      const response = await axios.get(`http://localhost:5000/getCommandeDetails/${numeroCommande}`);
+      const response = await axios.get(`http://localhost:5000/orders/getCommandeDetails/${numeroCommande}`);
       setCommandeDetails(response.data);
       setSelectedCommande(numeroCommande);
       setShowDetailsModal(true);
@@ -113,7 +113,7 @@ const Commandes = () => {
   // Récupérer les transactions d'une commande
   const handleShowTransactions = async (numeroCommande) => {
     try {
-      const response = await axios.get(`http://localhost:5000/getCommandeTransactions/${numeroCommande}`);
+      const response = await axios.get(`http://localhost:5000/orders/getCommandeTransactions/${numeroCommande}`);
       setTransactionDetails(response.data);
       setSelectedCommande(numeroCommande);
       setShowTransactionModal(true);

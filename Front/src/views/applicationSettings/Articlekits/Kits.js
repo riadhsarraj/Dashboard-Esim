@@ -19,7 +19,7 @@ const KitList = () => {
   // Récupérer les kits
   const fetchKits = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getKits");
+      const response = await axios.get("http://localhost:5000/kits/getKits");
       setKits(response.data);
     } catch (error) {
       setError("Erreur lors de la récupération des kits");
@@ -36,7 +36,7 @@ const KitList = () => {
   // Ajouter un kit
   const handleAddKit = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createKit", newKit);
+      const response = await axios.post("http://localhost:5000/kits/createKit", newKit);
       if (response.status === 201) {
         setShowModal(false);
         setNewKit({ name: "", description: "", categoryId: "" });
@@ -52,7 +52,7 @@ const KitList = () => {
   const handleUpdateKit = async (name, updatedData) => {
     try {
       const encodedName = encodeURIComponent(name); // Encoder le nom
-      const response = await axios.put(`http://localhost:5000/updateKitByName/${encodedName}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/kits/updateKitByName/${encodedName}`, updatedData);
       if (response.status === 200) {
         alert("Kit mis à jour avec succès");
         fetchKits(); // Rafraîchir la liste des kits
@@ -67,7 +67,7 @@ const KitList = () => {
   const handleDeleteKit = async (name) => {
     try {
       const encodedName = encodeURIComponent(name); // Encoder le nom
-      const response = await axios.delete(`http://localhost:5000/deleteKitByName/${encodedName}`);
+      const response = await axios.delete(`http://localhost:5000/kits/deleteKitByName/${encodedName}`);
       if (response.status === 200) {
         alert("Kit supprimé avec succès");
         fetchKits(); // Rafraîchir la liste des kits

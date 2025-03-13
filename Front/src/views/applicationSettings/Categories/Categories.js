@@ -35,7 +35,7 @@ const CategoryList = () => {
   // Récupérer les catégories
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getCategories");
+      const response = await axios.get("http://localhost:5000/categories/getCategories");
       const indexedCategories = response.data.map((category, index) => ({
         ...category,
         id: index + 1,
@@ -56,7 +56,7 @@ const CategoryList = () => {
   // Ajouter une catégorie
   const handleAddCategory = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createCategory", newCategory);
+      const response = await axios.post("http://localhost:5000/categories/createCategory", newCategory);
       if (response.status === 201) {
         setShowModal(false);
         setNewCategory({ name: "", description: "" });
@@ -72,7 +72,7 @@ const CategoryList = () => {
   // Modifier une catégorie
   const handleUpdateCategory = async (name) => {
     try {
-      const response = await axios.put(`http://localhost:5000/updateCategoryByName/${name}`, editCategory);
+      const response = await axios.put(`http://localhost:5000/categories/updateCategoryByName/${name}`, editCategory);
       if (response.status === 200) {
         setShowModal(false);
         setEditCategory(null);
@@ -89,7 +89,7 @@ const CategoryList = () => {
   const handleDeleteCategory = async (name) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?")) {
       try {
-        const response = await axios.delete(`http://localhost:5000/deleteCategoryByName/${name}`);
+        const response = await axios.delete(`http://localhost:5000/categories/deleteCategoryByName/${name}`);
         if (response.status === 200) {
           fetchCategories();
         }

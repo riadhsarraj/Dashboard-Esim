@@ -20,7 +20,7 @@ const ExampleTable = () => {
   // Récupérer les administrateurs
   const fetchAdmins = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getAdmins");
+      const response = await axios.get("http://localhost:5000/admin/getAdmins");
       const adminsWithId = response.data.map((admin, index) => ({
         ...admin,
         id: index + 1, // Compteur pour l'affichage
@@ -41,7 +41,7 @@ const ExampleTable = () => {
   // Ajouter un administrateur
   const handleAddUser = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/createAdmin", newUser);
+      const response = await axios.post("http://localhost:5000/admin/createAdmin", newUser);
       if (response.status === 200) {
         setShowModal(false);
         setNewUser({ username: "", email: "", password: "" });
@@ -57,7 +57,7 @@ const ExampleTable = () => {
   const handleUpdateUser = async (email, updatedData) => {
     try {
       const encodedEmail = encodeURIComponent(email); // Encoder l'email
-      const response = await axios.put(`http://localhost:5000/updateAdminByEmail/${encodedEmail}`, updatedData);
+      const response = await axios.put(`http://localhost:5000/admin/updateAdminByEmail/${encodedEmail}`, updatedData);
       if (response.status === 200) {
         alert("Administrateur mis à jour avec succès");
         fetchAdmins(); // Rafraîchir la liste des administrateurs
@@ -72,7 +72,7 @@ const ExampleTable = () => {
   const handleDeleteUser = async (email) => {
     try {
       const encodedEmail = encodeURIComponent(email); // Encoder l'email
-      const response = await axios.delete(`http://localhost:5000/deleteAdminByEmail/${encodedEmail}`);
+      const response = await axios.delete(`http://localhost:5000/admin/deleteAdminByEmail/${encodedEmail}`);
       if (response.status === 200) {
         alert("Administrateur supprimé avec succès");
         fetchAdmins(); // Rafraîchir la liste des administrateurs

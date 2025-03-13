@@ -28,7 +28,7 @@ const Login = () => {
     };
     const login = async () => {
       let responseData;
-      await fetch("http://localhost:5000/login", {
+      await fetch("http://localhost:5000/admin/login", {
           method: "POST",
           headers: {
               Accept: "application/json",

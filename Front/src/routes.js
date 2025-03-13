@@ -1,13 +1,8 @@
 import React from 'react'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
-const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const privilège = React.lazy(() => import('./views/account/privilège/Privilège'))
 const Users = React.lazy(() => import('./views/account/users/Users'))
-const Orders = React.lazy(() => import('./views/followUp/orders/Orders'))
-const Payment = React.lazy(() => import('./views/followUp/payment/Payment'))
-const Plans = React.lazy(() => import('./views/ESim/plans/Plans'))
-const Price = React.lazy(() => import('./views/ESim/price/Price'))
 const ClientList = React.lazy(() => import('./views/customerSettings/clientList/ClientList'))
 const ListPayment = React.lazy(() => import('./views/customerSettings/listPayment/ListPayment'))
 const Subscription = React.lazy(() => import('./views/customerSettings/subscriptions/Subscriptions'))
@@ -34,8 +29,6 @@ const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const routes = [
   { path: '/', exact: true, name: 'Home' },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
-  { path: '/theme', name: 'Theme', element: Colors, exact: true },
-  { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/account/privilège', name: 'privilège', element: privilège },
   { path: '/account/users', name: 'users', element: Users },
   { path: '/customerSettings/clientList', name: 'clientList', element: ClientList },
@@ -54,12 +47,6 @@ const routes = [
   { path: '/Order settings/ListOrders', name: 'ListOrderS', element: ListOrderS },
   { path: '/Order settings/CommandTransactions', name: 'CommandTrans', element: CommandTrans },
   { path: '/customerSettings/clientInformation', name: 'ProfileIdentifier', element: ProfileIdentifier },
-
-
-  { path: '/followUp/orders', name: 'orders', element: Orders },
-  { path: '/followUp/payment', name: 'payment', element: Payment },
-  { path: '/ESim/plans', name: 'plans', element: Plans },
-  { path: '/ESim/price', name: 'price', element: Price },
   { path: '/notifications', name: 'Notifications', element: Alerts, exact: true },
   { path: '/notifications/alerts', name: 'Alerts', element: Alerts },
   { path: '/notifications/badges', name: 'Badges', element: Badges },
